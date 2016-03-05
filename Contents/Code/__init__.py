@@ -1,50 +1,49 @@
 ART = 'art-default.jpg'
 ICON = 'icon-default.jpg'
-NAME = 'Resonance 104.4 fm'
-STREAM_URL = 'http://radio.canstream.co.uk:8004/live.mp3'
+NAME = 'Leproradio'
+STREAM_URL = 'http://leproradio.com/mpeg.mp3'
 
-####################################################################################################
+
 def Start():
+  ObjectContainer.art = R(ART)
+  ObjectContainer.title1 = NAME
+  TrackObject.thumb = R(ICON)
 
-	ObjectContainer.art = R(ART)
-	ObjectContainer.title1 = NAME
-	TrackObject.thumb = R(ICON)
 
-####################################################################################################     
-@handler('/music/resonancefm', NAME, thumb=ICON, art=ART)
+@handler('/music/leproradio', NAME, thumb=ICON, art=ART)
 def MainMenu():
 
-	oc = ObjectContainer()
-	oc.add(CreateTrackObject(url=STREAM_URL, title=NAME))
+  oc = ObjectContainer()
+  oc.add(CreateTrackObject(url=STREAM_URL, title=NAME))
 
-	return oc
+  return oc
 
-####################################################################################################
+
 def CreateTrackObject(url, title, include_container=False):
 
-	track_object = TrackObject(
-		key = Callback(CreateTrackObject, url=url, title=title, include_container=True),
-		rating_key = url,
-		title = title,
-		items = [
-			MediaObject(
-				parts = [
-					PartObject(key=Callback(PlayAudio, url=url, ext='mp3'))
-				],
-				container = Container.MP3,
-				bitrate = 128,
-				audio_codec = AudioCodec.MP3,
-				audio_channels = 2
-			)
-		]
-	)
+  track_object = TrackObject(
+    key = Callback(CreateTrackObject, url=url, title=title, include_container=True),
+    rating_key = url,
+    title = title,
+    items = [
+      MediaObject(
+        parts = [
+          PartObject(key=Callback(PlayAudio, url=url, ext='mp3'))
+        ],
+        container = Container.MP3,
+        bitrate = 128,
+        audio_codec = AudioCodec.MP3,
+        audio_channels = 2
+      )
+    ]
+  )
 
-	if include_container:
-		return ObjectContainer(objects=[track_object])
-	else:
-		return track_object
+  if include_container:
+    return ObjectContainer(objects=[track_object])
+  else:
+    return track_object
 
 ####################################################################################################
 def PlayAudio(url):
 
-	return Redirect(url)
+  return Redirect(url)
